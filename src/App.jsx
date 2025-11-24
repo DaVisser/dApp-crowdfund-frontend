@@ -211,7 +211,7 @@ function App() {
   return (
     <div className="App">
       <header className="header">
-        <h1>🚀 Crowdfund dApp</h1>
+        <h1>Crowdfund dApp</h1>
         <p>Decentralized Crowdfunding on Sepolia</p>
       </header>
 
@@ -252,7 +252,7 @@ function App() {
               <div className="stat-item">
                 <label>Status:</label>
                 <span className={locked ? 'badge-success' : 'badge-pending'}>
-                  {locked ? 'Goal Reached! 🎯' : 'In Progress'}
+                  {locked ? 'Goal Reached!' : 'In Progress'}
                 </span>
               </div>
               <div className="stat-item">
@@ -272,7 +272,7 @@ function App() {
             <h2>Make a Contribution</h2>
             {hasContributed ? (
               <div className="warning-message">
-                ⚠️ You have already contributed to this campaign. Each address can only contribute once.
+                You have already contributed to this campaign. Each address can only contribute once.
               </div>
             ) : (
               <div className="form-group">
