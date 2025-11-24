@@ -199,7 +199,7 @@ The project includes comprehensive testing coverage:
 
 ## Live Demo
 
-**Vercel URL:** [Insert your Vercel deployment URL here]
+**Vercel URL:** [crowdfund-dapp-orpin.vercel.app](https://crowdfund-dapp-orpin.vercel.app)
 
 ## Troubleshooting
 

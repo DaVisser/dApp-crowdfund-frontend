@@ -63,16 +63,6 @@ contract Crowdfund {
     }    
 
 
-
-
-
-
-
-
-
-
-
-
     /* working function for boolean implementation
     function contribute () public {
         require ( !hasContributed[msg.sender], "You have already contributed to this campaign" );
