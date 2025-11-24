@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import './App.css';
 import contractABI from './abi.json';
 
-// Replace with your deployed contract address
+// Deployed contract address
 const CONTRACT_ADDRESS = "0x87204075Cb6392d20F9C9621536FbA857E38c5Af";
 
 function App() {
