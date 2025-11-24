@@ -65,6 +65,9 @@ function App() {
     }
   };
 
+  // Check if user has contributed
+  const [hasContributed, setHasContributed] = useState(false);
+
   // Load contract data
   const loadContractData = async (contractInstance) => {
     try {
@@ -83,6 +86,10 @@ function App() {
       if (account) {
         const myAmount = await contract.amountContributed(account);
         setMyContribution(ethers.utils.formatEther(myAmount));
+        
+        // Check if user has contributed
+        const contributed = await contract.hasContributed(account);
+        setHasContributed(contributed);
       }
     } catch (error) {
       console.error('Error loading contract data:', error);
@@ -91,8 +98,26 @@ function App() {
 
   // Contribute to campaign
   const handleContribute = async () => {
-    if (!contract || !contributeAmount) {
+    if (!contract) {
+      setStatus('Please connect your wallet first');
+      return;
+    }
+    
+    if (!contributeAmount) {
       setStatus('Please enter a contribution amount');
+      return;
+    }
+
+    // Validate positive number
+    const amount = parseFloat(contributeAmount);
+    if (isNaN(amount) || amount <= 0) {
+      setStatus('Error: Contribution amount must be greater than 0');
+      return;
+    }
+
+    // Check if already contributed
+    if (hasContributed) {
+      setStatus('Error: You have already contributed to this campaign');
       return;
     }
 
@@ -105,7 +130,7 @@ function App() {
       setStatus('Transaction pending...');
       await tx.wait();
       
-      setStatus('Contribution successful!');
+      setStatus('Contribution successful! 🎉');
       setEvents(prev => [...prev, `Contributed ${contributeAmount} ETH - TX: ${tx.hash}`]);
       
       // Reload data
@@ -120,8 +145,26 @@ function App() {
 
   // Request refund
   const handleRefund = async () => {
-    if (!contract || !refundAmount) {
+    if (!contract) {
+      setStatus('Please connect your wallet first');
+      return;
+    }
+    
+    if (!refundAmount) {
       setStatus('Please enter a refund amount');
+      return;
+    }
+
+    // Validate positive number
+    const amount = parseFloat(refundAmount);
+    if (isNaN(amount) || amount <= 0) {
+      setStatus('Error: Refund amount must be greater than 0');
+      return;
+    }
+
+    // Validate refund amount doesn't exceed contribution
+    if (amount > parseFloat(myContribution)) {
+      setStatus('Error: Refund amount exceeds your contribution');
       return;
     }
 
@@ -134,7 +177,7 @@ function App() {
       setStatus('Transaction pending...');
       await tx.wait();
       
-      setStatus('Refund successful!');
+      setStatus('Refund successful! 💰');
       setEvents(prev => [...prev, `Refunded ${refundAmount} ETH - TX: ${tx.hash}`]);
       
       // Reload data
@@ -168,7 +211,7 @@ function App() {
   return (
     <div className="App">
       <header className="header">
-        <h1>Crowdfund dApp</h1>
+        <h1>🚀 Crowdfund dApp</h1>
         <p>Decentralized Crowdfunding on Sepolia</p>
       </header>
 
@@ -209,7 +252,7 @@ function App() {
               <div className="stat-item">
                 <label>Status:</label>
                 <span className={locked ? 'badge-success' : 'badge-pending'}>
-                  {locked ? 'Goal Reached!' : 'In Progress'}
+                  {locked ? 'Goal Reached! 🎯' : 'In Progress'}
                 </span>
               </div>
               <div className="stat-item">
@@ -227,19 +270,26 @@ function App() {
         {account && (
           <div className="card">
             <h2>Make a Contribution</h2>
-            <div className="form-group">
-              <input
-                type="number"
-                step="0.01"
-                placeholder="Amount in ETH (e.g., 0.1)"
-                value={contributeAmount}
-                onChange={(e) => setContributeAmount(e.target.value)}
-                className="input"
-              />
-              <button onClick={handleContribute} className="btn-primary">
-                Contribute
-              </button>
-            </div>
+            {hasContributed ? (
+              <div className="warning-message">
+                ⚠️ You have already contributed to this campaign. Each address can only contribute once.
+              </div>
+            ) : (
+              <div className="form-group">
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.000001"
+                  placeholder="Amount in ETH (e.g., 0.1)"
+                  value={contributeAmount}
+                  onChange={(e) => setContributeAmount(e.target.value)}
+                  className="input"
+                />
+                <button onClick={handleContribute} className="btn-primary">
+                  Contribute
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -251,7 +301,9 @@ function App() {
               <input
                 type="number"
                 step="0.01"
-                placeholder="Amount to refund (max: your contribution)"
+                min="0.000001"
+                max={myContribution}
+                placeholder={`Amount to refund (max: ${myContribution} ETH)`}
                 value={refundAmount}
                 onChange={(e) => setRefundAmount(e.target.value)}
                 className="input"
