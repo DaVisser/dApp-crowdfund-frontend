@@ -53,7 +53,7 @@ A full-stack Web3 decentralized application (dApp) built for **CPSC 8810 - Block
 
 ## Project Structure
 
-```
+```tex
 dApp-crowdfund-frontend/
 ├── frontend/
 │   ├── src/

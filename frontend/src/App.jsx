@@ -4,7 +4,7 @@ import './App.css';
 import contractABI from './abi.json';
 
 // Deployed contract address
-const CONTRACT_ADDRESS = "0x87204075Cb6392d20F9C9621536FbA857E38c5Af";
+const CONTRACT_ADDRESS = "0x0c18Bc688DD6Da465C843A69Ff150c584412161D";
 
 function App() {
   const [account, setAccount] = useState('');
