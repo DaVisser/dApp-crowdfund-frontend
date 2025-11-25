@@ -125,7 +125,7 @@ function App() {
       setStatus('Processing transaction...');
       
       const amountInWei = ethers.utils.parseEther(contributeAmount);
-      const tx = await contract.contribute(amountInWei);
+      const tx = await contract.contribute({ value: amountInWei });
       
       setStatus('Transaction pending...');
       await tx.wait();
